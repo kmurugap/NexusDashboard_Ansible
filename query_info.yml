@@ -1,0 +1,19 @@
+- hosts: nd
+  connection: httpapi
+  gather_facts: false
+  tasks:
+    - name: Get Nexus Dashboard version
+      cisco.nd.nd_version:
+        state: query
+      register: query_result
+    - name: Show Nexus Dashboard version
+      debug:
+        msg: "{{query_result}}"
+    - name: Get All sites Query
+      cisco.nd.nd_site:
+        state: query
+      register: query_result
+    - name: Display site list
+      debug:
+        msg: "{{ query_result }}"
+

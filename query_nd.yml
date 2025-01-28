@@ -1,0 +1,24 @@
+- hosts: nd
+  connection: httpapi
+  gather_facts: false
+  tasks:
+    - name: Get Nexus Dashboard version
+      cisco.nd.nd_version:
+        state: query
+      register: query_result
+    - name: Show Nexus Dashboard version
+      debug:
+        msg: "{{query_result['current']['major']|string+'.'+ query_result['current']['minor']|string+'.'+ query_result['current']['patch']|string}}"
+    - name: Get All sites Query
+      cisco.nd.nd_site:
+        state: query
+      register: query_result
+    - name: Collecting site list
+      set_fact:
+        site_list: "{{ (site_list|default([])) + [item['spec']['name']] }}"
+      with_items: "{{ query_result['current'] }}"
+      no_log: true
+    - name: Display site list
+      debug:
+        msg: "{{ site_list}}"
+
